@@ -12,8 +12,11 @@ tone_analyzer = ToneAnalyzerV3(
    version='2017-03-29 ')
 
 def getPara():
-    print("enter a sentence")
-    userInput = input()
+    while True:
+        print("Enter a sentence (at least a couple of words), or Q to quit")
+        userInput = input()
+        if userInput == 'Q' or userInput == 'q': quit()
+        if len(userInput) > 6 and ' ' in userInput: break
     return featurelist(userInput)
 
 # this takes in textstring and returns a json object
@@ -60,7 +63,7 @@ from sklearn.preprocessing import LabelEncoder,OneHotEncoder
 labelEnc=LabelEncoder()
 
 testtwitter['emtype']=labelEnc.fit_transform(testtwitter['emtype'])
-print(testtwitter.head()) # this works
+#print(testtwitter.head()) # this works
 
 
 #classifies a list of parameters using Random Forest
@@ -89,12 +92,14 @@ X = train.values[:, 1::]
 rtr = RandomForestRegressor(n_estimators=2000, n_jobs=-1)
 rtr.fit(X, y)
 
+print("The following program classifies sentences, rating them between 0 and 2. Less than 1 is probably hate speech,"\
+        "1-1.3 is probably offensive speech. Above 1.5 is usually not offensive")
 while True:
     #reg trial
     #temp = [[0.471789,0.636699,0.056785,0.000009,0.061664,0,0,0.874805,0.718028,0.038296,0.863941,0.304049,0.454404]]
 
     temp = [getPara()]
     predictedValue = rtr.predict(temp)
-    print("The predicted value is: %s" % predictedValue)
+    print("The predicted value (0-2) is: %s." % predictedValue)
 
 
